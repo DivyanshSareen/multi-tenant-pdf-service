@@ -1,0 +1,42 @@
+# Go binaries
+/server
+/bin/
+
+# Dependency vendor directory (we use go mod)
+vendor/
+
+# Build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Uploaded files / temp storage
+uploads/
+tmp/
+
+# Environment files — never commit secrets
+.env
+.env.*
+*.env
+
+# Terraform state and local config
+deployments/terraform/.terraform/
+deployments/terraform/.terraform.lock.hcl
+deployments/terraform/terraform.tfstate
+deployments/terraform/terraform.tfstate.backup
+deployments/terraform/*.tfvars
+
+# IDE / editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Test coverage
+coverage.out
+coverage.html
