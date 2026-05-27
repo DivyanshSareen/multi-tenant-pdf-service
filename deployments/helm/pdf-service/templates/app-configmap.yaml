@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "pdf-service.fullname" . }}-config
+  labels:
+    {{- include "pdf-service.labels" . | nindent 4 }}
+data:
+  SERVER_PORT: {{ .Values.app.port | quote }}
+  POSTGRES_HOST: {{ include "pdf-service.fullname" . }}-postgres-service
+  POSTGRES_PORT: {{ .Values.postgres.port | quote }}
+  POSTGRES_USER: {{ .Values.postgres.user | quote }}
+  POSTGRES_DB: {{ .Values.postgres.database | quote }}
+  POSTGRES_SSLMODE: disable
+  MONGO_URI: mongodb://{{ include "pdf-service.fullname" . }}-mongodb-service:{{ .Values.mongodb.port }}
+  MINIO_ENDPOINT: {{ include "pdf-service.fullname" . }}-minio-service:{{ .Values.minio.port }}
+  MINIO_USE_SSL: "false"
+  LLM_PROVIDER: {{ .Values.llm.provider | quote }}
+  OPENAI_MODEL: {{ .Values.llm.openaiModel | quote }}
+  OLLAMA_BASE_URL: {{ .Values.llm.ollamaBaseUrl | quote }}
+  OLLAMA_MODEL: {{ .Values.llm.ollamaModel | quote }}

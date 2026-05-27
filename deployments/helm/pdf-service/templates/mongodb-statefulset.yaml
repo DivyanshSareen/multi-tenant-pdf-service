@@ -1,0 +1,47 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "pdf-service.fullname" . }}-mongodb-pvc
+  labels:
+    {{- include "pdf-service.labels" . | nindent 4 }}
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: {{ .Values.mongodb.storage }}
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "pdf-service.fullname" . }}-mongodb
+  labels:
+    {{- include "pdf-service.labels" . | nindent 4 }}
+spec:
+  serviceName: {{ include "pdf-service.fullname" . }}-mongodb-service
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ include "pdf-service.fullname" . }}-mongodb
+  template:
+    metadata:
+      labels:
+        app: {{ include "pdf-service.fullname" . }}-mongodb
+    spec:
+      containers:
+        - name: mongodb
+          image: {{ .Values.mongodb.image }}
+          ports:
+            - containerPort: {{ .Values.mongodb.port }}
+          volumeMounts:
+            - name: mongodb-storage
+              mountPath: /data/db
+          readinessProbe:
+            exec:
+              command: [mongosh, --eval, "db.adminCommand('ping')"]
+            initialDelaySeconds: 10
+            periodSeconds: 10
+      volumes:
+        - name: mongodb-storage
+          persistentVolumeClaim:
+            claimName: {{ include "pdf-service.fullname" . }}-mongodb-pvc

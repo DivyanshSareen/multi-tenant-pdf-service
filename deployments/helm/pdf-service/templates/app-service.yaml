@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "pdf-service.fullname" . }}-service
+  labels:
+    {{- include "pdf-service.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: {{ include "pdf-service.fullname" . }}
+  ports:
+    - port: {{ .Values.app.port }}
+      targetPort: {{ .Values.app.port }}
+      {{- if eq .Values.service.type "NodePort" }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}

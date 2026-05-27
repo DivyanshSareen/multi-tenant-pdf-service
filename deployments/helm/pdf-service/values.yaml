@@ -1,0 +1,49 @@
+app:
+  image:
+    repository: pdf-service
+    tag: latest
+    # IfNotPresent ensures kind-loaded images are used without a registry.
+    pullPolicy: IfNotPresent
+  replicas: 1
+  port: 8080
+  # API key for Bearer token auth. Override in production.
+  apiKey: changeme
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+llm:
+  provider: openai
+  openaiApiKey: ""
+  openaiModel: gpt-4o-mini
+  ollamaBaseUrl: http://localhost:11434
+  ollamaModel: llama3
+
+postgres:
+  image: postgres:16
+  port: 5432
+  user: admin
+  password: secretpass
+  database: master_registry
+  storage: 1Gi
+
+mongodb:
+  image: mongo:7
+  port: 27017
+  storage: 1Gi
+
+minio:
+  image: minio/minio:latest
+  port: 9000
+  consolePort: 9001
+  rootUser: minioadmin
+  rootPassword: minioadmin
+  storage: 5Gi
+
+service:
+  type: NodePort
+  nodePort: 30080

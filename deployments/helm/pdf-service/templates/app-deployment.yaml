@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "pdf-service.fullname" . }}
+  labels:
+    {{- include "pdf-service.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.app.replicas }}
+  selector:
+    matchLabels:
+      app: {{ include "pdf-service.fullname" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "pdf-service.fullname" . }}
+    spec:
+      containers:
+        - name: pdf-service
+          image: "{{ .Values.app.image.repository }}:{{ .Values.app.image.tag }}"
+          imagePullPolicy: {{ .Values.app.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.app.port }}
+          envFrom:
+            - configMapRef:
+                name: {{ include "pdf-service.fullname" . }}-config
+            - secretRef:
+                name: {{ include "pdf-service.fullname" . }}-secret
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.app.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          readinessProbe:
+            httpGet:
+              path: /ready
+              port: {{ .Values.app.port }}
+            initialDelaySeconds: 15
+            periodSeconds: 15
+          resources:
+            {{- toYaml .Values.app.resources | nindent 12 }}
