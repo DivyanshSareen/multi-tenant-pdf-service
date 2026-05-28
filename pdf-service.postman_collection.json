@@ -1,0 +1,143 @@
+{
+  "info": {
+    "name": "Multi-Tenant PDF Service",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:30080"
+    },
+    {
+      "key": "api_key",
+      "value": "changeme"
+    },
+    {
+      "key": "tenant_name",
+      "value": "acme"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /health",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/health"
+          }
+        },
+        {
+          "name": "GET /ready",
+          "request": {
+            "method": "GET",
+            "url": "{{base_url}}/ready"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Upload",
+      "item": [
+        {
+          "name": "POST /api/v1/upload",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_key}}"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "tenantName",
+                  "value": "{{tenant_name}}",
+                  "type": "text"
+                },
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": "{{base_url}}/api/v1/upload"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tenants",
+      "item": [
+        {
+          "name": "GET /api/v1/tenants",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_key}}"
+              }
+            ],
+            "url": "{{base_url}}/api/v1/tenants"
+          }
+        },
+        {
+          "name": "GET /api/v1/tenants/:name",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/tenants/{{tenant_name}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tenants", "{{tenant_name}}"]
+            }
+          }
+        },
+        {
+          "name": "GET /api/v1/tenants/:name/documents",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/tenants/{{tenant_name}}/documents",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tenants", "{{tenant_name}}", "documents"]
+            }
+          }
+        },
+        {
+          "name": "DELETE /api/v1/tenants/:name",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{api_key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/tenants/{{tenant_name}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "v1", "tenants", "{{tenant_name}}"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
