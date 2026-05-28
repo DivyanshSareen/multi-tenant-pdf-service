@@ -63,6 +63,23 @@ export OPENAI_API_KEY="sk-..."   # or leave empty to use Ollama
 ./scripts/test-api.sh
 ```
 
+### 4. Access databases locally (GUI tools)
+
+Services run inside the cluster and are not exposed by default. Use `kubectl port-forward` to connect from DBeaver, Compass, or a browser:
+
+```bash
+# PostgreSQL → DBeaver (localhost:5432, user: admin, password: secretpass, db: master_registry)
+kubectl port-forward -n pdf-service svc/pdf-service-postgres-service 5432:5432
+
+# MongoDB → Compass (mongodb://localhost:27017)
+kubectl port-forward -n pdf-service svc/pdf-service-mongodb-service 27017:27017
+
+# MinIO console → http://localhost:9001 (user: minioadmin, password: minioadmin)
+kubectl port-forward -n pdf-service svc/pdf-service-minio-service 9001:9001
+```
+
+> If a port is already in use on your machine, pick a different local port, e.g. `9091:9001`.
+
 ## Manual Deployment (raw K8s manifests)
 
 ```bash
